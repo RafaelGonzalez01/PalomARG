@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -102,10 +103,10 @@ public class DashboardView extends VBox {
         gridBotones.setHgap(20);
         gridBotones.setVgap(16);
 
-        Button btnPalomas = crearBotonPrincipal("🕊️ Administrar Palomas", "Ver listado completo, árboles genealógicos y búsquedas", "btn-primary", () -> navegador.accept("PALOMAS"));
-        Button btnNuevaPaloma = crearBotonPrincipal("➕ Registrar Nueva Paloma", "Agregar un nuevo anillo al plantel", "btn-success", accionNuevaPaloma);
-        Button btnCarreras = crearBotonPrincipal("🏁 Carreras y Resultados", "Ver sueltas, distancias y velocidades", "btn-secondary", () -> navegador.accept("CARRERAS"));
-        Button btnPalomar = crearBotonPrincipal("🏠 Datos de Mi Palomar", "Editar propietario, ubicación y estirpes", "btn-secondary", () -> navegador.accept("PALOMAR"));
+        Button btnPalomas = crearBotonPrincipal("fas-dove", "Administrar Palomas", "Ver listado completo, árboles genealógicos y búsquedas", "btn-primary", () -> navegador.accept("PALOMAS"));
+        Button btnNuevaPaloma = crearBotonPrincipal("fas-plus", "Registrar Nueva Paloma", "Agregar un nuevo anillo al plantel", "btn-success", accionNuevaPaloma);
+        Button btnCarreras = crearBotonPrincipal("fas-flag-checkered", "Carreras y Resultados", "Ver sueltas, distancias y velocidades", "btn-secondary", () -> navegador.accept("CARRERAS"));
+        Button btnPalomar = crearBotonPrincipal("fas-home", "Datos de Mi Palomar", "Editar propietario, ubicación y estirpes", "btn-secondary", () -> navegador.accept("PALOMAR"));
 
         gridBotones.add(btnPalomas, 0, 0);
         gridBotones.add(btnNuevaPaloma, 1, 0);
@@ -147,11 +148,13 @@ public class DashboardView extends VBox {
         return card;
     }
 
-    private Button crearBotonPrincipal(String texto, String subtexto, String claseCss, Runnable accion) {
+    private Button crearBotonPrincipal(String iconoCodigo, String texto, String subtexto, String claseCss, Runnable accion) {
         Button btn = new Button();
         btn.getStyleClass().addAll(claseCss);
         btn.setMaxWidth(Double.MAX_VALUE);
         btn.setPrefHeight(75);
+        
+        FontIcon icono = new FontIcon(iconoCodigo);
 
         VBox content = new VBox(4);
         content.setAlignment(Pos.CENTER_LEFT);
@@ -161,11 +164,13 @@ public class DashboardView extends VBox {
 
         Label l2 = new Label(subtexto);
         l2.setStyle("-fx-font-size: 14px; -fx-opacity: 0.9; -fx-text-fill: inherit;");
+        
+        content.getChildren().addAll(l1,l2);
 
-        content.getChildren().addAll(l1, l2);
-        btn.setGraphic(content);
+        HBox fila = new HBox(14, icono, content);
+        fila.setAlignment(Pos.CENTER_LEFT);
+        btn.setGraphic(fila);
         btn.setOnAction(e -> accion.run());
-
         return btn;
     }
 

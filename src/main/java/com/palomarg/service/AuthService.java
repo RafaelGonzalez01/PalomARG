@@ -55,9 +55,12 @@ public class AuthService {
      */
     public Optional<Usuario> login(String nombreUsuario, String password) {
         if (nombreUsuario == null || password == null) return Optional.empty();
+        
         Optional<Usuario> opt = usuarioRepo.findByNombreUsuario(nombreUsuario.trim());
         if (opt.isEmpty()) return Optional.empty();
+        
         Usuario u = opt.get();
+        
         try {
             if (BCrypt.checkpw(password, u.getHashPassword())) {
                 return Optional.of(u);
