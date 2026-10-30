@@ -1,0 +1,247 @@
+================================================================================
+PALOMARG - RESUMEN DE CONFIGURACIÓN, ARQUITECTURA Y ARCHIVOS GENERADOS
+================================================================================
+
+Proyecto: /home/rafael/Escritorio/PalomARG
+Basado en: prompt.txt y diagrama_palomar.png (UML)
+Arquitectura: MVC (Modelo-Vista-Controlador)
+Tecnologías: Java 21, JavaFX 21, SQLite JDBC, Maven
+
+--------------------------------------------------------------------------------
+1. ACTUALIZACIÓN DEL ARCHIVO pom.xml
+--------------------------------------------------------------------------------
+Se agregaron las dependencias de JavaFX 21 (controls, fxml, graphics) y SQLite JDBC,
+junto al plugin de compilación para Java 21 y javafx-maven-plugin:
+
+<dependencies>
+    <!-- JavaFX Controls, FXML y Graphics -->
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>21.0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>21.0.2</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-graphics</artifactId>
+        <version>21.0.2</version>
+    </dependency>
+
+    <!-- SQLite JDBC -->
+    <dependency>
+        <groupId>org.xerial</groupId>
+        <artifactId>sqlite-jdbc</artifactId>
+        <version>3.45.2.0</version>
+    </dependency>
+
+    <!-- JUnit 5 para pruebas unitarias -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.10.2</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+
+
+--------------------------------------------------------------------------------
+2. ESTRUCTURA DE PAQUETES Y CLASES GENERADAS
+--------------------------------------------------------------------------------
+
+com.palomarg
+├── Main.java                               // Lanzador estándar
+├── PalomargApp.java                        // Aplicación JavaFX principal
+├── controller/
+│   └── MainController.java                 // Coordinador MVC
+├── database/
+│   └── DatabaseManager.java                // Conexión SQLite y creación de tablas DDL
+├── model/
+│   ├── entity/
+│   │   ├── Paloma.java                     // Entidad principal (anillo, padres, rol, color, etc.)
+│   │   ├── Palomar.java                    // Datos de instalaciones y propietario
+│   │   ├── Origen.java                     // Estirpe / línea genética o criador
+│   │   ├── Carrera.java                    // Suelta, fecha/hora, distancia y clima
+│   │   ├── Campeonato.java                 // Temporada y carreras vinculadas
+│   │   └── ParticipacionCarrera.java       // Comprobación, cálculo mpm, puesto y puntos
+│   ├── enums/
+│   │   ├── SexoPaloma.java                 // MACHO, HEMBRA, INDETERMINADO
+│   │   ├── Colores.java                    // Azul, Zaino, Rodillo, Goteado, etc.
+│   │   ├── RolPaloma.java                  // Voladora, Reproductora, Nodriza, Retirada
+│   │   ├── TipoCategoria.java              // Velocidad, Medio Fondo, Fondo, Gran Fondo
+│   │   └── CategoriaEdad.java              // Pichón, Yearling, Adulta
+│   └── vo/
+│       └── FechaNac.java                   // Manejo flexible de día/mes/año o solo año de anillado
+├── repository/
+│   ├── PalomaRepository.java               // CRUD y búsquedas de palomas
+│   ├── PalomarRepository.java              // Persistencia del palomar
+│   ├── OrigenRepository.java               // Persistencia de estirpes
+│   ├── CarreraRepository.java              // Persistencia de carreras
+│   ├── CampeonatoRepository.java           // Persistencia de campeonatos y vínculos
+│   └── ParticipacionCarreraRepository.java // Tiempos, clasificación y cálculo de velocidades
+└── view/
+    ├── DashboardView.java                  // Tablero principal con accesos rápidos
+    ├── PalomaView.java                     // Tabla accesible de palomas, filtros y árbol genealógico
+    ├── PalomaDialog.java                   // Formulario modal de registro y edición
+    ├── CarreraView.java                    // Calendario de sueltas y clasificación
+    ├── PalomarView.java                    // Gestión de datos del palomar y estirpes
+    └── MainView.java                       // Ventana contenedora con navegación accesible
+
+Recursos:
+- src/main/resources/css/styles.css: Hoja de estilos con diseño adaptado a adultos mayores.
+
+
+--------------------------------------------------------------------------------
+3. PUNTOS DESTACADOS DE LA IMPLEMENTACIÓN
+--------------------------------------------------------------------------------
+
+1. Diseño Visual Adaptado para Adultos Mayores:
+   - Tipografía clara y ampliada: Fuentes de 15px-16px para textos base y 18px-24px para títulos.
+   - Alto contraste: Paleta basada en azul marino (#1e3a8a), blanco y grises suaves que reducen el cansancio visual.
+   - Botones grandes y reconocibles: Botones con altura mínima de 48px a 75px, iconos explicativos (🕊️, ➕, 🏁, 💾) y textos descriptivos en lenguaje natural.
+   - Tabla ordenada y espaciosa: Filas de 44px de alto para facilitar la lectura y selección sin dificultad motriz.
+   - Búsqueda inmediata: Barra de búsqueda grande por número de anillo o filtrado rápido por sexo y rol.
+
+2. Capa de Persistencia SQLite (DatabaseManager.java):
+   - Crea automáticamente el archivo local 'palomarg.db' y todas las tablas con sus claves foráneas habilitadas (PRAGMA foreign_keys = ON;).
+   - Si la base de datos es nueva, precarga automáticamente datos iniciales representativos del ámbito colombófilo (palomas de ejemplo, genealogía padre/madre, palomar, orígenes como Línea Janssen o Van Loon, y una carrera con sus velocidades calculadas) para poder probar la aplicación inmediatamente.
+
+3. Lógica de Dominio Colombófilo (ParticipacionCarrera.java):
+   - Incorpora el cálculo automático de velocidad en metros por minuto (m/m) a partir de la fecha/hora de suelta, distancia en kilómetros y fecha/hora de llegada, así como el recálculo automático de puestos y puntuación.
+
+
+--------------------------------------------------------------------------------
+4. CÓMO PROBAR LA APLICACIÓN
+--------------------------------------------------------------------------------
+
+Todos los archivos compilan limpiamente y las pruebas unitarias pasan al 100%.
+
+- Desde Eclipse:
+  Puede abrir el proyecto en /home/rafael/Escritorio/PalomARG, hacer clic derecho sobre
+  Main.java o PalomargApp.java y seleccionar "Run As -> Java Application".
+
+- Desde la terminal con Maven:
+  cd /home/rafael/Escritorio/PalomARG
+  mvn javafx:run
+================================================================================
+
+
+================================================================================
+FASE 1 – MODELO Y PERSISTENCIA (COMPLETADA)
+================================================================================
+
+Se han implementado y enriquecido todas las entidades, enumeraciones, interfaces
+de repositorio y persistencia en SQLite requeridas para la Fase 1, manteniendo la
+arquitectura MVC y garantizando que la interfaz gráfica nunca acceda a SQL ni a
+implementaciones directas de base de datos.
+
+--------------------------------------------------------------------------------
+1. ARCHIVOS CREADOS
+--------------------------------------------------------------------------------
+
+Enumeraciones (com.palomarg.model.enums):
+- RolUsuario.java: Roles de usuario (USUARIO, MASTER).
+- EstadoReclamo.java: Estados del reclamo de palomar (PENDIENTE, APROBADO, RECHAZADO).
+- AlcanceCampeonato.java: Ámbitos (LOCAL, INTERSOCIAL, REGIONAL).
+- CategoriaCampeonato.java: Categorías (PICHONES, MIXTAS, ADULTAS, FONDO, GRAN_FONDO, SIN_CATEGORIA).
+
+Objetos de Valor y Entidades (com.palomarg.model):
+- Anillo.java: Modela la clave única compuesta (pais, institucion, anio de 2 dígitos y numero),
+  con parseador y formateador automático (ej. "ARG-FCA-24-100234").
+- Usuario.java: id, nombreUsuario, hashPassword, rol.
+- Sociedad.java: Asociación colombófila con id, nombre, localidad, codigo.
+- Zona.java: Zona geográfica de vuelo (id, nombre, descripcion).
+- Colombofilo.java: nombre, nombreNormalizado (normalización automática sin tildes ni caracteres especiales),
+  codigo entre corchetes (ej. "[101]"), localidad, sociedad, zona, usuario opcional y campos de sincronización externa.
+- AliasColombofilo.java: nombreWeb, nombreNormalizado, codigo, ciudad, vinculación a Colombofilo.
+- ReclamoPalomar.java: usuario, colombofilo, estado, fecha, comentario.
+
+Interfaces de Repositorio (com.palomarg.repository):
+* Se establecieron interfaces formales para desacoplar totalmente la UI del motor de persistencia:
+- UsuarioRepository.java
+- SociedadRepository.java
+- ZonaRepository.java
+- ColombofiloRepository.java
+- AliasColombofiloRepository.java
+- ReclamoPalomarRepository.java
+- PalomaRepository.java (convertido a interfaz)
+- PalomarRepository.java (convertido a interfaz)
+- OrigenRepository.java (convertido a interfaz)
+- CarreraRepository.java (convertido a interfaz)
+- CampeonatoRepository.java (convertido a interfaz)
+- ParticipacionCarreraRepository.java (convertido a interfaz)
+
+Implementaciones SQLite JDBC (com.palomarg.repository.sqlite):
+- SqliteUsuarioRepository.java
+- SqliteSociedadRepository.java
+- SqliteZonaRepository.java
+- SqliteColombofiloRepository.java
+- SqliteAliasColombofiloRepository.java
+- SqliteReclamoPalomarRepository.java
+- SqlitePalomarRepository.java
+- SqliteOrigenRepository.java
+- SqlitePalomaRepository.java
+- SqliteCarreraRepository.java
+- SqliteCampeonatoRepository.java
+- SqliteParticipacionCarreraRepository.java
+
+--------------------------------------------------------------------------------
+2. ARCHIVOS MODIFICADOS
+--------------------------------------------------------------------------------
+
+- Paloma.java: Propietario (Colombofilo) obligatorio; palomar, origen y padres opcionales;
+  sexo, color y nacimiento opcionales (nullable); anillo compuesto (pais, institucion, anio, numero);
+  externalId, fuente, ultimaSincronizacion.
+- Palomar.java: direccion, latitud, longitud; pertenece a Colombofilo.
+- Carrera.java: ciudad, puntoSuelta, coordenadas de suelta, refKm, puntosPrimera, idWeb (único),
+  encestes manuales; cálculo de marcadas y % marcadas (solo si hay encestes); campos de sincronización externa.
+- ParticipacionCarrera.java: colombofilo de ese día fijado históricamente; tiempoVuelo como Duration
+  (con soporte para vuelos de más de 24 horas y formateador legible 26h 30m 00s), velocidadMetrosMin,
+  velocidadKmh, distanciaKm, equipo, zonas, region, rango, horaMarcada, metodoMarcada.
+- Campeonato.java: temporada, sociedad, alcance, clase, categoria; relación muchos a muchos con Carrera;
+  campos de sincronización externa.
+- DatabaseManager.java: DDL actualizado con 13 tablas relacionales, claves foráneas, restricciones de unicidad
+  compuestas y precarga de datos iniciales enriquecidos para pruebas.
+- MainController.java: Expone únicamente interfaces de repositorio para desacoplar por completo la UI.
+- PalomaView.java y PalomaDialog.java: Se integró la selección y visualización del Colombófilo propietario
+  y la admisión de palomas importadas sin sexo/color/nacimiento.
+- MainView.java y PalomargApp.java: Actualizados para cablear los nuevos repositorios desacoplados.
+- PalomARGTest.java: Suite de pruebas unitarias actualizada con 8 pruebas que validan el 100% de los
+  nuevos requisitos del modelo.
+
+--------------------------------------------------------------------------------
+3. DECISIONES TOMADAS
+--------------------------------------------------------------------------------
+
+1. Desacoplamiento Estricto (Regla de Arquitectura):
+   - Todas las clases de la vista (PalomaView, CarreraView, PalomarView, PalomaDialog, etc.) interactúan
+     únicamente con las interfaces de repositorio del paquete com.palomarg.repository.
+   - Las implementaciones con SQL se concentran en com.palomarg.repository.sqlite. Esto permitirá reemplazar
+     en el futuro esta capa local por una API REST remota sin tocar una sola línea de código en la UI.
+
+2. Modelado del Anillo y Clave Única Compuesta:
+   - Se creó la clase de valor Anillo (pais, institucion, anio de 2 dígitos y numero). En SQLite se aplicó
+     la restricción UNIQUE (pais, institucion, anio, numero).
+   - Se mantuvieron métodos de conveniencia como getNumeroAnillo() y setNumeroAnillo(String) con parseo automático
+     para asegurar compatibilidad total con búsquedas y tablas existentes.
+
+3. Inmutabilidad Histórica en Participación:
+   - En ParticipacionCarrera, el campo colombofilo queda registrado con el competidor del día de la carrera.
+     Si la paloma cambia de dueño posteriormente en Paloma.propietario, el récord de la carrera no se altera.
+
+4. Duración de Vuelo y Velocidades:
+   - Se utilizó java.time.Duration para tiempoVuelo, almacenado en segundos en SQLite (segundos_vuelo).
+     Esto soporta tiempos de vuelo de fondo y gran fondo que superan las 24 horas y permite calcular con
+     precisión tanto metros por minuto (m/m) como kilómetros por hora (km/h).
+
+5. Relación Muchos a Muchos Campeonato <-> Carrera:
+   - Se implementó mediante la tabla asociativa campeonato_carreras (id_campeonato, id_carrera), permitiendo
+     que una carrera puntúe en múltiples campeonatos simultáneos.
+
+6. Normalización de Nombres:
+   - Colombofilo.normalizarNombre() remueve automáticamente diacríticos (tildes), caracteres especiales
+     y dobles espacios para garantizar búsquedas insensibles y mapeos exactos con AliasColombofilo.
+================================================================================

@@ -1,0 +1,16 @@
+# Archivos de compilación de Maven y Java
+/target/
+*.class
+
+# Archivos de configuración de IDEs (Eclipse / IntelliJ)
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+
+# Base de datos local
+palomarg.db
+
+# Carpeta de documentos y materiales de referencia
+materiales/
